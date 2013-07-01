@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<camel:camelContext id="camel" trace="false" xmlns="http://camel.apache.org/schema/spring">
+	   	<camel:propertyPlaceholder id="properties" location="mongodb.properties"/> <!-- placeholders for Routes.java -->
+		<camel:package>com.zuhlke.wikiwc</camel:package> <!-- where to search for RouteBuilders -->
+   	</camel:camelContext>
+
+	<!-- -->
+	<!-- mongos instance -->
+	<!-- -->
+	
+	<bean id="mDbOpts" class="com.mongodb.MongoOptions">
+		<property name="connectionsPerHost"><value>100</value></property>
+	</bean>
+	
+	<bean id="mDbHost" class="com.mongodb.ServerAddress">
+		<constructor-arg index="0" value="127.0.0.1"/>
+		<constructor-arg index="1" value="27017"/> <!-- default mongodb port, now used by mongos-->
+	</bean>
+	
+	<bean id="mDb" class="com.mongodb.Mongo"> <!-- Bean used in Routes.java -->
+		<constructor-arg index="0" ref="mDbHost"/>
+		<constructor-arg index="1" ref="mDbOpts"/>
+	</bean>
+ 	 	
+</beans>
